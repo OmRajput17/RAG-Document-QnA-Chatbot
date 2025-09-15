@@ -16,12 +16,14 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 
-## Getting API key and setting up langchain tracing
-os.environ["LANGCHAIN_PROJECT"] = os.getenv("LANGCHAIN_PROJECT")
+# Load from Streamlit secrets
+groq_api_key = st.secrets["GROQ_API_KEY"]
+os.environ["HF_TOKEN"] = st.secrets["HF_TOKEN"]
+
+# LangChain settings
+os.environ["LANGCHAIN_PROJECT"] = st.secrets.get("LANGCHAIN_PROJECT")
 os.environ["LANGCHAIN_TRACING_V2"] = "true"
-os.environ["LANGCHAIN_API_KEY"] = os.getenv("LANGCHAIN_API_KEY")
-groq_api_key = os.getenv("GROQ_API_KEY")
-os.environ["HF_TOKEN"] = os.getenv("HF_TOKEN")
+os.environ["LANGCHAIN_API_KEY"] = st.secrets["LANGCHAIN_API_KEY"]
 
 ### Embeddings
 embeddings=HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
