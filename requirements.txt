@@ -1,7 +1,6 @@
 langchain
 langchain_community
 langchain_groq
-chromadb
 langchain_huggingface
 sentence-transformers
 python-dotenv
@@ -9,3 +8,4 @@ langchain_core
 streamlit
 ipykernel
 pypdf
+faiss-cpu

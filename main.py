@@ -2,7 +2,7 @@
 import streamlit as st
 from langchain.chains import create_history_aware_retriever, create_retrieval_chain, LLMChain
 from langchain.chains.combine_documents import create_stuff_documents_chain
-from langchain_community.vectorstores import Chroma
+from langchain_community.vectorstores import FAISS
 from langchain_community.chat_message_histories import ChatMessageHistory
 from langchain_core.chat_history import BaseChatMessageHistory
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder, PromptTemplate
@@ -16,14 +16,16 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 
-# Load from Streamlit secrets
-groq_api_key = st.secrets["GROQ_API_KEY"]
-os.environ["HF_TOKEN"] = st.secrets["HF_TOKEN"]
+def get_secret(key: str, default: str = None):
+    # Prefer st.secrets if available, else fall back to os.environ
+    return st.secrets.get(key, os.getenv(key, default))
 
-# LangChain settings
-os.environ["LANGCHAIN_PROJECT"] = st.secrets.get("LANGCHAIN_PROJECT")
+# Load from Streamlit secrets
+os.environ["LANGCHAIN_PROJECT"] = get_secret("LANGCHAIN_PROJECT")
 os.environ["LANGCHAIN_TRACING_V2"] = "true"
-os.environ["LANGCHAIN_API_KEY"] = st.secrets["LANGCHAIN_API_KEY"]
+os.environ["LANGCHAIN_API_KEY"] = get_secret("LANGCHAIN_API_KEY")
+os.environ["HF_TOKEN"] = get_secret("HF_TOKEN")
+groq_api_key = get_secret("GROQ_API_KEY")
 
 ### Embeddings
 embeddings=HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
@@ -61,7 +63,7 @@ if groq_api_key:
         # Split and create embeddings for the documents
         text_splitter = RecursiveCharacterTextSplitter(chunk_size=5000, chunk_overlap=500)
         splits = text_splitter.split_documents(documents)
-        vectorstore = Chroma.from_documents(documents=splits, embedding=embeddings)
+        vectorstore = FAISS.from_documents(documents=splits, embedding=embeddings)
         retriever = vectorstore.as_retriever(search_kwargs = {"k":3})    
 
         ### Setting prompt
