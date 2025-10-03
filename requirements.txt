@@ -9,3 +9,6 @@ streamlit
 ipykernel
 pypdf
 faiss-cpu
+cassio
+datasets
+tiktoken
