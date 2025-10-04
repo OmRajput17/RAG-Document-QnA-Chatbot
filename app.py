@@ -9,6 +9,7 @@ from langchain_community.vectorstores import Chroma
 from langchain_community.document_loaders import PyPDFDirectoryLoader
 from langchain.chains import create_retrieval_chain
 
+## Loading the Environment Variables
 from dotenv import load_dotenv
 load_dotenv()
 
