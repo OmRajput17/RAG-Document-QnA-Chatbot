@@ -17,6 +17,7 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 
+### Checking for the Keys
 def get_secret(key: str, default: str = None):
     # Prefer st.secrets if available, else fall back to os.environ
     return st.secrets.get(key, os.getenv(key, default))
